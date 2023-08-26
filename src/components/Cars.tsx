@@ -2,18 +2,23 @@ import React, {Dispatch, FC, PropsWithChildren, SetStateAction, useEffect, useSt
 
 import {ICar} from "../interfaces";
 import Car from "./Car";
+import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
+import {carActions} from "../redux/slices/carSlice";
 
 interface IProps extends PropsWithChildren {
-cars:ICar[]
-setCarForUpdate:Dispatch<SetStateAction<ICar>>
-    setTrigger:Dispatch<SetStateAction<boolean>>
+
 }
 
-const Cars:FC<IProps> = ({cars, setCarForUpdate, setTrigger}) => {
+const Cars:FC<IProps> = () => {
+    const dispatch = useAppDispatch()
+    const {cars} = useAppSelector(state => state.cars)
 
+    useEffect(() => {
+        dispatch(carActions.getAll())
+    },[])
     return (
         <div>
-            {cars.map(car => <Car key={car.id} car={car} setCarForUpdate={setCarForUpdate} setTrigger={setTrigger}/>)}
+            {cars.map(car => <Car key={car.id} car={car}/>)}
         </div>
     );
 };

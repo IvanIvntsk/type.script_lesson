@@ -3,15 +3,17 @@ import React, {Dispatch, FC, PropsWithChildren, SetStateAction} from 'react';
 import {SubmitHandler, useForm} from "react-hook-form";
 import {ICar} from "../interfaces";
 import {carServices} from "../services";
+import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
+import {carActions} from "../redux/slices/carSlice";
 
 interface IProps extends PropsWithChildren {
-setTrigger:Dispatch<SetStateAction<boolean>>
-    carForUpdate:ICar
-    setCarFroUpdate:Dispatch<SetStateAction<ICar>>
+
 }
 
-const CarForm:FC<IProps> = ({setTrigger,carForUpdate,setCarFroUpdate}) => {
+const CarForm:FC<IProps> = () => {
     const {reset, register, handleSubmit, setValue} = useForm<ICar>()
+    const {carForUpdate} = useAppSelector(state => state.cars)
+    const dispatch = useAppDispatch()
 
     if (carForUpdate){
         setValue('brand', carForUpdate.brand)
@@ -20,15 +22,12 @@ const CarForm:FC<IProps> = ({setTrigger,carForUpdate,setCarFroUpdate}) => {
     }
 
     const save:SubmitHandler<ICar> = async (car) => {
-        await carServices.create(car)
-        setTrigger(prev => !prev)
+        await dispatch(carActions.create({car}))
         reset()
     }
 
     const update:SubmitHandler<ICar> = async (car) => {
-        await carServices.updateById(carForUpdate.id, car)
-        setCarFroUpdate(null)
-        setTrigger(prev => !prev)
+        await dispatch(carActions.update({id:carForUpdate.id, car}))
         reset()
     }
 

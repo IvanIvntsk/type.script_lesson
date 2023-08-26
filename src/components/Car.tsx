@@ -3,29 +3,28 @@ import React, {Dispatch, FC, PropsWithChildren, SetStateAction} from 'react';
 import {ICar} from "../interfaces";
 import {carServices} from "../services";
 import {useNavigate} from "react-router-dom";
+import {useAppDispatch} from "../hooks/reduxHooks";
+import {carActions} from "../redux/slices/carSlice";
 
 interface IProps extends PropsWithChildren {
     car:ICar
-    setCarForUpdate:Dispatch<SetStateAction<ICar>>
-    setTrigger:Dispatch<SetStateAction<boolean>>
 
 }
 
-const Car: FC<IProps> = ({car, setCarForUpdate, setTrigger}) => {
+const Car: FC<IProps> = ({car}) => {
     const navigate = useNavigate();
-
+    const dispatch = useAppDispatch()
     const {id, brand} = car
 
     const delteCar = async ()  => {
-        await carServices.deleteById(id)
-        setTrigger(prev => !prev)
+        await dispatch(carActions.deleteCar({id}))
     }
 
     return (
         <div>
             <div>id:{id}</div>
             <div>brand:{brand}</div>
-            <button onClick={() => setCarForUpdate(car)}>update</button>
+            <button onClick={()=>dispatch(carActions.setCatForUpdate({car}))}>update</button>
             <button onClick={delteCar}>delete</button>
             <button onClick={()=> navigate(id.toString(), {state:car})}>details</button>
         </div>
