@@ -10,9 +10,11 @@ const authServices = {
     register(user:IAuth):IRes<IUser>{
         return apiServices.post(urls.auth.register, user)
     },
-    async login(user:IAuth):Promise<void>{
+    async login(user:IAuth):Promise<IUser>{
         const {data} = await apiServices.post<ITokens>(urls.auth.login, user)
         this.setTokens(data)
+        const {data:me} = await this.me()
+        return me
     },
     me():IRes<IUser>{
         return apiServices.get(urls.auth.me)
