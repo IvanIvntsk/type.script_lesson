@@ -27,6 +27,19 @@ const register = createAsyncThunk<void, {user:IAuth}>(
         }
     }
 )
+const me = createAsyncThunk<IUser, void>(
+    'authSlice/me',
+    async (_, {rejectWithValue})=>{
+        try {
+            const {data} = await authServices.me()
+            return data
+        } catch (e) {
+            const err = e as AxiosError
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
+
 const login = createAsyncThunk<IUser, {user:IAuth}>(
     'authSlice/login',
     async ({user}, {rejectWithValue}) => {
@@ -47,6 +60,9 @@ const authSlice = createSlice({
         .addCase(login.fulfilled, (state, action) => {
             state.me = action.payload
         })
+        .addCase(me.fulfilled, (state, action) => {
+            state.me = action.payload
+        })
         .addMatcher(isRejected(),(state,action) => {
             state.errors = action.payload
         })
@@ -61,7 +77,8 @@ const {reducer:authReducer, actions} = authSlice
 const authActions = {
     ...actions,
     register,
-    login
+    login,
+    me
 }
 
 export {authActions, authReducer}
