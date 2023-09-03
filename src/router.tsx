@@ -3,6 +3,8 @@ import {createBrowserRouter, Navigate} from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
 import CarsPage from "./pages/carsPage";
 import CarsDetailsPage from "./pages/carsDetailsPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +24,14 @@ const router = createBrowserRouter([
                         element:<CarsDetailsPage/>
                     }
                 ]
+            },
+            {
+                path:'login',
+                element:<LoginPage/>
+            },
+            {
+                path:'register',
+                element:<RegisterPage/>
             }
         ]
     }
